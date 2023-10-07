@@ -73,7 +73,7 @@ class QueueFrontier(Frontier):
             raise Exception("Empty Frontier")
         else:
             return self.frontier.pop(0)
-
+  
 
 class PriorityQueueFrontier(Frontier):
     def __init__(self):
