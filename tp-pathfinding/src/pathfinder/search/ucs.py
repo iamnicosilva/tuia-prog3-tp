@@ -29,22 +29,6 @@ class UniformCostSearch:
         alcanzados[node.state] = node.cost
 
 
-        # Initialize the explored dictionary to be empty
-        #reached = {}
-        
-        # Add the node to the explored dictionary
-        #reached[node.state] = 0
-        #eached[node.cost] = 0
-        #print(reached)
-        
-        # return NoSolution(explored)
-
-                # Return if the node contains a goal state
-        #if node.state == grid.end:
-        #    return Solution(node, reached)
-
-
-        #count = 0
 
         while True:
 
@@ -53,14 +37,14 @@ class UniformCostSearch:
 
             #  Fail if the frontier is empty
             if frontier.is_empty():
-                return NoSolution(reached)
+                return NoSolution(alcanzados)
 
             # Remove a node from the frontier
             node = frontier.pop()
             #print('pop: ',node)
 
             if node.state == grid.end:
-                return Solution(node, reached)
+                return Solution(node, alcanzados)
 
             # Go right
             successors = grid.get_neighbours(node.state)
@@ -68,37 +52,35 @@ class UniformCostSearch:
             #Recorremos succesors para obtener las acciones 
 
 
-            #SEGUIR DESDE ACA: QUEREMOS OBTENER EL VECINO CON MENOR COSTO Y SACAR LA ITERACION MAL ORDENADA:
-            #costos = {}
-
-
             for m in successors:
 
 
+                # Obtenemos nuevo estado
+                # s' = 
                 new_state = successors[m]
 
 
-                # Initialize the son node
-                new_node = Node("", new_state,
-                                node.cost + grid.get_cost(new_state),
-                                parent=node, action=m)
+                # Calculamos costo
+                costo = node.cost + grid.get_cost(new_state)
 
 
-                if new_state not in alcanzados or new_node.cost < alcanzados[new_state]:
+
+                if new_state not in alcanzados or costo < alcanzados[new_state]:
+                    # Initialize the son node
+                    #n' = (...)
+                    new_node = Node("", new_state, costo, parent=node, action=m)
+
+                    alcanzados[new_node.state] = costo
                     
+                    #alcanzados[new_node.state] = new_node.cost
 
-                    # Return if the node contains a goal state
-                    # In this example, the goal test is run
-                    # before adding a new node to the frontier
+
 
 
                     # Add the new node to the frontier
-                    frontier.add(new_node,5)
+                    frontier.add(new_node,costo)
 
-                    print(reached)
-
-                    if count == 10:
-                        return
+# PREGUNTAR: VALIDAR EL COMPORTAMIENTO EN PRUEBAS CON DISTINTAS PONDERACIONES
 
 
 
@@ -120,5 +102,3 @@ class UniformCostSearch:
 
 
 
-
-        #return NoSolution(reached)

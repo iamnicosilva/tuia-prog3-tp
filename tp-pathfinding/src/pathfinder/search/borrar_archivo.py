@@ -1,6 +1,6 @@
-a = {}
-a[(7,6)]=7
-a[(6,6)]=99
-a[(3,6)]=1
-a[(8,6)]=68
-print(max(a,key=a.get))
+diccionario = {}
+diccionario[(7,6)]=7
+diccionario[(6,6)]=99
+diccionario[(3,6)]=1
+diccionario[(8,6)]=68
+print(max(diccionario,key=diccionario.get))
