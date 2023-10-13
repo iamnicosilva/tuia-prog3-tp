@@ -374,6 +374,7 @@ class Maze:
             "Depth First Search": Search.DEPTH_FIRST_SEARCH,
             "Greedy Best First Search": Search.GREEDY_BEST_FIRST_SEARCH,
             "A* Search": Search.ASTAR_SEARCH,
+            "A* Search2": Search.ASTAR_SEARCH2,
         }
 
         # Instantiate Grid for PathFinder

@@ -10,3 +10,5 @@ class Search(Enum):
     DEPTH_FIRST_SEARCH = "DFS"
     GREEDY_BEST_FIRST_SEARCH = "GBFS"
     ASTAR_SEARCH = "A*"
+    ASTAR_SEARCH2 = "A*2"
+

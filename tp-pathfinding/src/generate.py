@@ -216,8 +216,8 @@ class MazeGenerator:
         nodes = []
         for rowIdx in range(self.maze.width):
             for colIdx in range(self.maze.height):
-#                if random.randint(1, 10) < 8:
-#                    continue
+                if random.randint(1, 10) < 8:
+                    continue
 
                 x, y = self.maze.coords[colIdx][rowIdx]
                 nodes.append(
@@ -225,7 +225,7 @@ class MazeGenerator:
                         rect=pygame.Rect(0, 0, MIN_SIZE, MIN_SIZE),
                         center=(x + CELL_SIZE // 2, y + CELL_SIZE // 2),
                         ticks=pygame.time.get_ticks(),
-                        value=random.randint(1,10),
+                        value="9",
                         color=WHITE,
                         animation=Animation.WEIGHT_ANIMATION
                     )

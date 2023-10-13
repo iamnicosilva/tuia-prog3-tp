@@ -7,25 +7,25 @@ from ..models.node import Node
 
 
 # Heuristica Manhatan
-def heuristica(celda,objetivo):
-    distanciax = abs(objetivo[0] - celda[0])
-    distanciay = abs(objetivo[1] - celda[1])
-    distancia = distanciax + distanciay
-    return distancia
-
-# # Heuristica euclidia
 # def heuristica(celda,objetivo):
 #     distanciax = abs(objetivo[0] - celda[0])
 #     distanciay = abs(objetivo[1] - celda[1])
-#     distancia = (distanciax**2 + distanciay**2)**0.5
-#     # print(distancia)
+#     distancia = distanciax + distanciay
 #     return distancia
 
+# # Heuristica euclidia
+def heuristica(celda,objetivo):
+     distanciax = abs(objetivo[0] - celda[0])
+     distanciay = abs(objetivo[1] - celda[1])
+     distancia = (distanciax**2 + distanciay**2)**0.5
+     # print(distancia)
+     return distancia
 
 
 
 
-class AStarSearch:
+
+class AStarSearch2:
     @staticmethod
     def search(grid: Grid) -> Solution:
         """Find path between two points in a grid using A* Search
