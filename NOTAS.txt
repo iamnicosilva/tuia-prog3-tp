@@ -1,2 +1,3 @@
 probar y justificar heuristica (manhatan y euclidea)
 
+comentar código de tp-pathfinding (primera parte)
