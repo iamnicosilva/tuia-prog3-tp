@@ -1,0 +1,2 @@
+probar y justificar heuristica (manhatan y euclidea)
+
