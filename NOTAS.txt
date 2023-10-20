@@ -1,3 +1,91 @@
 probar y justificar heuristica (manhatan y euclidea)
 
 comentar código de tp-pathfinding (primera parte)
+
+preguntar: 
+    1- la funcion val_dif ¿como funciona?
+    2- que significa la "h" en el pseudocodigo de ascencion de colinas
+    
+
+
+        def solve(self, problem: OptProblem):
+            """Resuelve un problema de optimizacion con ascension de colinas.
+
+            Argumentos:
+            ==========
+            problem: OptProblem
+                un problema de optimizacion
+            """
+            # Inicio del reloj
+            start = time()
+
+            # Arrancamos del estado inicial
+            actual = problem.init
+            value = problem.obj_val(problem.init)
+
+            soluciones = {}
+            count = 0
+
+            while True:
+
+                # Determinar las acciones que se pueden aplicar
+                # y las diferencias en valor objetivo que resultan
+                diff = problem.val_diff(actual)
+                # print('dif: ',diff)
+
+
+
+                # LINEA ORIGINAL:
+                # Buscar las acciones que generan el mayor incremento de valor obj
+                # max_acts = [act for act, val in diff.items() if val == max(diff.values())]
+
+                # CODIGO REESCRITO: 
+
+                # Buscar las acciones que generan el mayor incremento de valor obj
+                max_acts = []  # Creamos una lista vacía llamada max_acts
+
+                # Obtenemos el valor máximo en el diccionario diff
+                max_value = max(diff.values())
+
+                # Iteramos a través de los elementos del diccionario diff
+                for act, val in diff.items():
+                    # Comprobamos si el valor actual (val) es igual al valor máximo
+                    if val == max_value:
+                        # Si es igual, agregamos la acción (act) a la lista max_acts
+                        max_acts.append(act)
+
+
+                # Elegir una accion aleatoria
+                act = choice(max_acts)
+
+                # Retornar si estamos en un optimo local 
+                # (diferencia de valor objetivo no positiva)
+    
+                if diff[act] <= 0:
+                    print(diff[act])
+                    # ACA EN VEZ DE RETORNAR, TENEMOS QUE RESETEAR Y GUARDAR
+                    # LOS VALORES DE ESTA PSEUDO-SOLUCIÓN PARA DESPUES 
+                    # PODER QUEDARNOS CON LA MEJOR
+                    # NECESITAMOS ESTABLECER CUANTAS VECES SE VA A REINICIAR
+                    # USANDO UN CONTADOR QUE DEPENDA DE LA CANTIDAD DE CIUDADES
+                    # DEL MAPA
+                    soluciones[count] = diff[act],actual,value,time(),end-start
+                    if count == 100:
+                        problem.re
+
+
+
+                    self.tour = actual
+                    self.value = value
+                    end = time()
+                    self.time = end-start
+
+                    return
+
+                # Sino, nos movemos al sucesor
+                else:
+
+                    print(diff[act])
+                    actual = problem.result(actual, act)
+                    value = value + diff[act]
+                    self.niters += 1
