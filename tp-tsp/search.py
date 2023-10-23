@@ -110,7 +110,7 @@ class HillClimbingReset(LocalSearch):
         value = problem.obj_val(problem.init)
 
         soluciones = {}
-        count = 0
+        restart_count = 0
 
         while True:
 
@@ -125,8 +125,9 @@ class HillClimbingReset(LocalSearch):
             # Buscar las acciones que generan el mayor incremento de valor obj
             # max_acts = [act for act, val in diff.items() if val == max(diff.values())]
 
-            # CODIGO REESCRITO: 
 
+
+            # CODIGO REESCRITO: 
             # Buscar las acciones que generan el mayor incremento de valor obj
             max_acts = []  # Creamos una lista vacía llamada max_acts
 
@@ -146,20 +147,23 @@ class HillClimbingReset(LocalSearch):
 
             # Retornar si estamos en un optimo local 
             # (diferencia de valor objetivo no positiva)
+            print(actual)
 
             if diff[act] <= 0:
-                print(diff[act])
+                print('diff[act] no positivo: ',diff[act])
+                soluciones[actual] = value
                 # ACA EN VEZ DE RETORNAR, TENEMOS QUE RESETEAR Y GUARDAR
                 # LOS VALORES DE ESTA PSEUDO-SOLUCIÓN PARA DESPUES 
                 # PODER QUEDARNOS CON LA MEJOR
                 # NECESITAMOS ESTABLECER CUANTAS VECES SE VA A REINICIAR
                 # USANDO UN CONTADOR QUE DEPENDA DE LA CANTIDAD DE CIUDADES
                 # DEL MAPA
-                soluciones[count] = diff[act],actual,value,time(),end-start
-                if count == 100:
-                    problem.re
+                # soluciones[count] = diff[act],actual,value,time(),end-start
 
-
+                if restart_count < 100:
+                    actual = problem.TSP.random_reset()
+                    restart_count +=1
+                    continue
 
                 self.tour = actual
                 self.value = value
