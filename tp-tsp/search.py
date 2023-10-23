@@ -107,8 +107,10 @@ class HillClimbingReset(LocalSearch):
 
         # Arrancamos del estado inicial
         actual = problem.init
+        #Valor objetivo
         value = problem.obj_val(problem.init)
 
+        #Posibles soluciones
         soluciones = {}
         restart_count = 0
 
@@ -118,14 +120,12 @@ class HillClimbingReset(LocalSearch):
             # y las diferencias en valor objetivo que resultan
             diff = problem.val_diff(actual)
             # print('dif: ',diff)
-
-
+            print('valor: ',value)
+            print(actual)
 
             # LINEA ORIGINAL:
             # Buscar las acciones que generan el mayor incremento de valor obj
             # max_acts = [act for act, val in diff.items() if val == max(diff.values())]
-
-
 
             # CODIGO REESCRITO: 
             # Buscar las acciones que generan el mayor incremento de valor obj
@@ -147,11 +147,10 @@ class HillClimbingReset(LocalSearch):
 
             # Retornar si estamos en un optimo local 
             # (diferencia de valor objetivo no positiva)
-            print(actual)
 
             if diff[act] <= 0:
                 print('diff[act] no positivo: ',diff[act])
-                soluciones[actual] = value
+                soluciones[value] = actual
                 # ACA EN VEZ DE RETORNAR, TENEMOS QUE RESETEAR Y GUARDAR
                 # LOS VALORES DE ESTA PSEUDO-SOLUCIÓN PARA DESPUES 
                 # PODER QUEDARNOS CON LA MEJOR
@@ -160,13 +159,21 @@ class HillClimbingReset(LocalSearch):
                 # DEL MAPA
                 # soluciones[count] = diff[act],actual,value,time(),end-start
 
-                if restart_count < 100:
-                    actual = problem.TSP.random_reset()
+            #Si no se reseteo 10 veces, se resetea y cuenta el reseteo
+            # El contador 10 tiene que ser dinamico segun la cant de ciudades.
+                if restart_count < 5:
+                    actual = problem.random_reset()
+                    value = problem.obj_val(actual) #value + diff[act]
                     restart_count +=1
                     continue
+            
+            #Ya se reseteó al menos 10 veces hay que definir cual es la mejor solucion
+                #TOUR: mejor solucion       
+                #Buscamos el maximo
+                mejor_solucion = max(soluciones)
+                self.tour = soluciones[mejor_solucion]
+                self.value = mejor_solucion 
 
-                self.tour = actual
-                self.value = value
                 end = time()
                 self.time = end-start
 
@@ -175,7 +182,7 @@ class HillClimbingReset(LocalSearch):
             # Sino, nos movemos al sucesor
             else:
 
-                print(diff[act])
+                print('diff act ',diff[act])
                 actual = problem.result(actual, act)
                 value = value + diff[act]
                 self.niters += 1
@@ -184,5 +191,14 @@ class HillClimbingReset(LocalSearch):
 
 class Tabu(LocalSearch):
     """Algoritmo de busqueda tabu."""
+    def solve(self, problem: OptProblem):
+        actual = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]
+        value = problem.obj_val(problem.init)
+        start = time()
 
-    # COMPLETAR
+        self.tour = actual
+        self.value = value
+        end = time()
+        self.time = end-start
+
+        return
