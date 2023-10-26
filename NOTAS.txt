@@ -116,6 +116,15 @@ sucesor nos va a dar la clave del diccionario
 
 stats:
 Valor:          Tiempo:         Iters:          Algoritmo:
--87840          0.04            19              hill
--86585          0.21            276             hill_reset
+-87840          1.74            500             tabu
+-87840          6.02            1000            tabu
+-87840          21.37           2000            tabu
+-86585          79.66           4000            tabu MAX GLOBAL
 -86585          126.76          5000            tabu
+
+-87840          60.33           1000            tabu MAX LOCAL Y EMPEORÓ
+
+
+
+
+

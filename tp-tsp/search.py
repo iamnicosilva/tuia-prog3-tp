@@ -218,9 +218,7 @@ class Tabu(LocalSearch):
         # Inicializamos el contador de iteraciones
         iter_count = 0
         
-        while iter_count < 4000:
-            no_tabu = {}
-            sucesores = {}
+        while iter_count < 1000:
             
             # Determinar las acciones que se pueden aplicar y las diferencias
             # en valor objetivo que resultan (OBTENER VECINOS):
@@ -228,31 +226,46 @@ class Tabu(LocalSearch):
             # posibles_acciones: nos da un diccionario cuya key es una tupla (acción)
             # y su valor es la diferencia de ésta respecto al estado actual
 
+            mejor_clave = None
+            encontrar = False
 
-            for accion in posibles_acciones:
+            while not encontrar:
+
+                max_valor = float('-inf')  # Inicializamos con un valor muy pequeño
+
+                for accion,valor in posibles_acciones.items():
+                    if valor > max_valor:
+                        max_valor = valor
+                        mejor_clave = accion
+
+                
+                sucesor = problem.result(actual,mejor_clave)
+                print(sucesor)
+
+                if sucesor not in tabu:
+                    encontrar = True
+                else:
+                    if mejor_clave in posibles_acciones:
+                        del posibles_acciones[mejor_clave]
+
+
                 # SUCESORES: (diccionario)
                 # La key es el ACCION, asignamos primer atributo: lista del estado, segundo atributo: valor
                 # key: Accion
                 # Lista de Estados
                 # Valor    
-                sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
+                #sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
 
         ####################ENCONRTRAR LA MANERA DE MEJORAR EL TIEMPO , HACIENDO UNA LISTA NO_TABU???
-            for sucesor in sucesores:
-                # Posición 0 = Lista de Estado
-                if sucesores[sucesor][0] not in tabu:
-                    no_tabu[sucesor] = sucesores[sucesor][0],sucesores[sucesor][1]
-            
+
             # SUCESOR
             # Clave: Accion
             # Lista de Estados --> Orden que recorre las ciudades
             # Valor  
-            mejor_accion = max(no_tabu, key=lambda key: no_tabu[key][1])
-            sucesor = no_tabu[mejor_accion][0]
-            #print('sucesor',sucesor,no_tabu[sucesor])
+            #mejor_accion = max(no_tabu, key=lambda key: no_tabu[key][1])
+            #sucesor = no_tabu[mejor_accion][0]
 
             # Obj val devuelve valor objetivo
-            #print('SUCESOR',no_tabu[sucesor][0])
             if problem.obj_val(mejor) < problem.obj_val(sucesor):
                 mejor = sucesor
                 #iter_count = 0
