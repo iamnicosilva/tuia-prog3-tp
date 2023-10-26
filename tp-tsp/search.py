@@ -117,7 +117,7 @@ class HillClimbingReset(LocalSearch):
 
         # Tomamos un cuarto debido a que es mas performante
         cant_reinicios = round(len(actual)*0.50)
-        print(cant_reinicios)
+
         while True:
 
             # Determinar las acciones que se pueden aplicar
@@ -218,19 +218,21 @@ class Tabu(LocalSearch):
         # Inicializamos el contador de iteraciones
         iter_count = 0
         
-        while iter_count < 5000:
+        while iter_count < 4000:
             no_tabu = {}
             sucesores = {}
             
-            # Determinar las acciones que se pueden aplicar
-            # y las diferencias en valor objetivo que re sultan
-            # Vecinos
+            # Determinar las acciones que se pueden aplicar y las diferencias
+            # en valor objetivo que resultan (OBTENER VECINOS):
             posibles_acciones = problem.val_diff(actual)
+            # posibles_acciones: nos da un diccionario cuya key es una tupla (acción)
+            # y su valor es la diferencia de ésta respecto al estado actual
+
 
             for accion in posibles_acciones:
-                # SUCESORES:
-                # La clave es el ACCION, asignamos primer atributo: lista del estado, segundo atributo: valor
-                # Clave: Accion
+                # SUCESORES: (diccionario)
+                # La key es el ACCION, asignamos primer atributo: lista del estado, segundo atributo: valor
+                # key: Accion
                 # Lista de Estados
                 # Valor    
                 sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
@@ -240,7 +242,6 @@ class Tabu(LocalSearch):
                 # Posición 0 = Lista de Estado
                 if sucesores[sucesor][0] not in tabu:
                     no_tabu[sucesor] = sucesores[sucesor][0],sucesores[sucesor][1]
-                    #print(no_tabu[sucesor][1])
             
             # SUCESOR
             # Clave: Accion
