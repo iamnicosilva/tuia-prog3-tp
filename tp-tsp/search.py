@@ -215,10 +215,8 @@ class Tabu(LocalSearch):
         #Valor objetivo
         value = problem.obj_val(problem.init)
 
-        # Inicializamos el contador de iteraciones
-        iter_count = 0
         
-        while iter_count < 4000:
+        while self.niters < 4000:
             no_tabu = {}
             sucesores = {}
             
@@ -242,6 +240,11 @@ class Tabu(LocalSearch):
                 # Posición 0 = Lista de Estado
                 if sucesores[sucesor][0] not in tabu:
                     no_tabu[sucesor] = sucesores[sucesor][0],sucesores[sucesor][1]
+
+            # Verificamos si ya recorrimos X cant de estados (elementos en tabu)
+            # en ese caso eliminamos el estado más antiguo para limpiar memoria
+            if self.niters > 4000:
+                tabu.pop(0)
             
             # SUCESOR
             # Clave: Accion
@@ -259,7 +262,6 @@ class Tabu(LocalSearch):
             
             tabu.append(sucesor)
             actual = sucesor
-            iter_count+=1
             self.niters += 1
 
         self.tour = mejor
