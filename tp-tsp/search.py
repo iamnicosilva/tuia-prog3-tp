@@ -218,7 +218,7 @@ class Tabu(LocalSearch):
         # Inicializamos el contador de iteraciones
         iter_count = 0
         
-        while iter_count < 100:
+        while iter_count < 5000:
             no_tabu = {}
             sucesores = {}
             
@@ -226,8 +226,6 @@ class Tabu(LocalSearch):
             # y las diferencias en valor objetivo que re sultan
             # Vecinos
             posibles_acciones = problem.val_diff(actual)
-
-            #sucesores = problem.result(actual)
 
             for accion in posibles_acciones:
                 # SUCESORES:
@@ -237,66 +235,35 @@ class Tabu(LocalSearch):
                 # Valor    
                 sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
 
-            #print(sucesores)
-
+        ####################ENCONRTRAR LA MANERA DE MEJORAR EL TIEMPO , HACIENDO UNA LISTA NO_TABU???
             for sucesor in sucesores:
                 # Posición 0 = Lista de Estado
                 if sucesores[sucesor][0] not in tabu:
-                    #no_tabu.append(sucesor)
                     no_tabu[sucesor] = sucesores[sucesor][0],sucesores[sucesor][1]
-                    print(no_tabu[sucesor][1])
+                    #print(no_tabu[sucesor][1])
             
+            # SUCESOR
+            # Clave: Accion
+            # Lista de Estados --> Orden que recorre las ciudades
+            # Valor  
+            mejor_accion = max(no_tabu, key=lambda key: no_tabu[key][1])
+            sucesor = no_tabu[mejor_accion][0]
+            #print('sucesor',sucesor,no_tabu[sucesor])
+
+            # Obj val devuelve valor objetivo
+            #print('SUCESOR',no_tabu[sucesor][0])
+            if problem.obj_val(mejor) < problem.obj_val(sucesor):
+                mejor = sucesor
+                #iter_count = 0
             
-            #print('no tabu', no_tabu)
+            tabu.append(sucesor)
+            actual = sucesor
+            iter_count+=1
+            self.niters += 1
 
-            #max_value = max(no_tabu, key=no_tabu.get)
-            sucesor = max(no_tabu, key=lambda key: no_tabu[key][1])
-            print('sucesor',sucesor,no_tabu[sucesor])
-            ########################################################################
-            # SEGUIR POR ACA!!!!!!!!!!!!
-            #if problema.h(mejor) < problema.h(sucesor) then mejor ← sucesor 
-
-            #sucesor = no_tabu[max_value]
-            
-            #max_value = max(no_tabu.values())
-            
-
-            #if problem.val_diff(mejor) < problem.val_diff(sucesor)
-            # Iteramos a través de los elementos del diccionario diff
-            #for act, val in no_tabu.items():
-                # Comprobamos si el valor actual (val) es igual al valor máximo
-            #    if val == max_value:
-                    # Si es igual, agregamos la acción (act) a la lista max_acts
-            #        max_acts.append(act)
-
-            # Elegir una accion aleatoria
-            act = choice(max_acts)
-
-            # Retornar si estamos en un optimo local 
-            # (diferencia de valor objetivo no positiva)
-
-            if diff[act] <= 0:
-                #print('diff[act] no positivo: ',diff[act])
-                soluciones[value] = actual
-
-                if restart_count <= cant_reinicios:
-                    actual = problem.random_reset()
-                    value = problem.obj_val(actual) #value + diff[act]
-                    restart_count +=1
-                    continue
-            
-                mejor_solucion = max(soluciones)
-                self.tour = soluciones[mejor_solucion]
-                self.value = mejor_solucion 
-
-                end = time()
-                self.time = end-start
-                return
-
-            # Sino, nos movemos al sucesor
-            else:
-
-                #print('diff act ',diff[act])
-                actual = problem.result(actual, act)
-                value = value + diff[act]
-                self.niters += 1
+        self.tour = mejor
+        self.value = problem.obj_val(mejor)
+        end = time()
+        self.time = end-start
+        print(len(tabu))
+        return
