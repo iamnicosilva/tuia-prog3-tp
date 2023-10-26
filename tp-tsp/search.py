@@ -116,7 +116,7 @@ class HillClimbingReset(LocalSearch):
         restart_count = 0
 
         # Tomamos un cuarto debido a que es mas performante
-        cant_reinicios = round(len(actual)*0.50)
+        cant_reinicios = (len(actual)/2)
 
         while True:
 
@@ -215,8 +215,11 @@ class Tabu(LocalSearch):
         #Valor objetivo
         value = problem.obj_val(problem.init)
 
+        total_iter= min(len(actual)*20,1000)
+        total_tabu= min(len(actual)*2,100)
+
         
-        while self.niters < 4000:
+        while self.niters < total_iter:
             no_tabu = {}
             sucesores = {}
             
@@ -235,7 +238,7 @@ class Tabu(LocalSearch):
                 # Valor    
                 sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
 
-        ####################ENCONRTRAR LA MANERA DE MEJORAR EL TIEMPO , HACIENDO UNA LISTA NO_TABU???
+     
             for sucesor in sucesores:
                 # Posición 0 = Lista de Estado
                 if sucesores[sucesor][0] not in tabu:
@@ -243,7 +246,7 @@ class Tabu(LocalSearch):
 
             # Verificamos si ya recorrimos X cant de estados (elementos en tabu)
             # en ese caso eliminamos el estado más antiguo para limpiar memoria
-            if self.niters > 4000:
+            if self.niters > 100:
                 tabu.pop(0)
             
             # SUCESOR
@@ -268,5 +271,4 @@ class Tabu(LocalSearch):
         self.value = problem.obj_val(mejor)
         end = time()
         self.time = end-start
-        print(len(tabu))
         return
