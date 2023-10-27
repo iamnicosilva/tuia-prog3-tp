@@ -70,7 +70,7 @@ class HillClimbing(LocalSearch):
             max_acts = [act for act, val in diff.items() if val ==
                         max(diff.values())]
 
-            # Elegir una accion aleatoria
+            # Elegir una accion aleatoria 
             act = choice(max_acts)
 
             # Retornar si estamos en un optimo local 
@@ -113,9 +113,11 @@ class HillClimbingReset(LocalSearch):
 
         #Posibles soluciones
         soluciones = {}
+
+        # Inicializamos contador de reseteos
         restart_count = 0
 
-        # Tomamos un cuarto debido a que es mas performante
+        # Tomamos la mitad debido a que es mas performante
         cant_reinicios = (len(actual)/2)
 
         while True:
@@ -123,9 +125,7 @@ class HillClimbingReset(LocalSearch):
             # Determinar las acciones que se pueden aplicar
             # y las diferencias en valor objetivo que resultan
             diff = problem.val_diff(actual)
-            # print('dif: ',diff)
-            #print('valor: ',value)
-            #print(actual)
+
 
             # LINEA ORIGINAL:
             # Buscar las acciones que generan el mayor incremento de valor obj
@@ -146,37 +146,30 @@ class HillClimbingReset(LocalSearch):
                     max_acts.append(act)
 
 
-            # Elegir una accion aleatoria
+            # Elegir una accion aleatoria como criterio de desempate
+            # cuando tiene varias opciones igual de optimas
             act = choice(max_acts)
 
             # Retornar si estamos en un optimo local 
             # (diferencia de valor objetivo no positiva)
-
             if diff[act] <= 0:
-                #print('diff[act] no positivo: ',diff[act])
                 soluciones[value] = actual
-                # ACA EN VEZ DE RETORNAR, TENEMOS QUE RESETEAR Y GUARDAR
-                # LOS VALORES DE ESTA PSEUDO-SOLUCIÓN PARA DESPUES 
-                # PODER QUEDARNOS CON LA MEJOR
-                # NECESITAMOS ESTABLECER CUANTAS VECES SE VA A REINICIAR
-                # USANDO UN CONTADOR QUE DEPENDA DE LA CANTIDAD DE CIUDADES
-                # DEL MAPA
-                # soluciones[count] = diff[act],actual,value,time(),end-start
+                # Si estamos en un máximo, nos disponemos a verificar el reseteo o retorno
 
-            #Si no se reseteo 10 veces, se resetea y cuenta el reseteo
-            # El contador 10 tiene que ser dinamico segun la cant de ciudades.
-
-            
-
+            # Si no se reseteó X cant de veces: se resetea, cuenta el reseteo
+            # y continua a la prox iteración del bucle sin retornar
                 if restart_count <= cant_reinicios:
+                    # Reseteo:
                     actual = problem.random_reset()
-                    value = problem.obj_val(actual) #value + diff[act]
+
+                    value = problem.obj_val(actual)
                     restart_count +=1
                     continue
             
-            #Ya se reseteó al menos 10 veces hay que definir cual es la mejor solucion
-                #TOUR: mejor solucion       
-                #Buscamos el maximo
+            # Ya se reseteó al menos X cant de veces y hay que
+            # definir cual es la mejor solucion
+                # TOUR: mejor solucion
+                # Buscamos el maximo
                 mejor_solucion = max(soluciones)
                 self.tour = soluciones[mejor_solucion]
                 self.value = mejor_solucion 
