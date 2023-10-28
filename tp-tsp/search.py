@@ -117,73 +117,73 @@ class HillClimbingReset(LocalSearch):
         # Inicializamos contador de reseteos
         restart_count = 0
 
-        # Tomamos la mitad debido a que es mas performante
+        # Se toma la mitad de la cantidad de ciudades para definir el número de reseteos
+        # Debido a que es mas performante
         cant_reinicios = (len(actual)/2)
 
         while True:
-
             # Determinar las acciones que se pueden aplicar
             # y las diferencias en valor objetivo que resultan
             diff = problem.val_diff(actual)
 
+            # Se crea una lista vacía
+            max_acts = []  
 
-            # LINEA ORIGINAL:
-            # Buscar las acciones que generan el mayor incremento de valor obj
-            # max_acts = [act for act, val in diff.items() if val == max(diff.values())]
-
-            # CODIGO REESCRITO: 
-            # Buscar las acciones que generan el mayor incremento de valor obj
-            max_acts = []  # Creamos una lista vacía llamada max_acts
-
-            # Obtenemos el valor máximo en el diccionario diff
+            # Se busca las acciones que generan el mayor incremento de valor objetivo
+            # Se obtiene el valor máximo en el diccionario diff
             max_value = max(diff.values())
 
-            # Iteramos a través de los elementos del diccionario diff
+            # Se itera los elementos del diccionario diff
             for act, val in diff.items():
-                # Comprobamos si el valor actual (val) es igual al valor máximo
+            
+            # Se comprueba si el valor actual (val) es igual al valor máximo
                 if val == max_value:
-                    # Si es igual, agregamos la acción (act) a la lista max_acts
+            # Si es igual, se agrega la acción (act) a la lista max_acts
                     max_acts.append(act)
 
-
-            # Elegir una accion aleatoria como criterio de desempate
-            # cuando tiene varias opciones igual de optimas
+            # Se elige una acción aleatoria como criterio de desempate
+            # cuando tiene varias opciones igual de óptimas
             act = choice(max_acts)
 
-            # Retornar si estamos en un optimo local 
+            # Se verifica si estamos en un óptimo local 
             # (diferencia de valor objetivo no positiva)
             if diff[act] <= 0:
                 soluciones[value] = actual
-                # Si estamos en un máximo, nos disponemos a verificar el reseteo o retorno
+            # Si es un máximo, se define el reseteo o retorno
 
             # Si no se reseteó X cant de veces: se resetea, cuenta el reseteo
             # y continua a la prox iteración del bucle sin retornar
                 if restart_count <= cant_reinicios:
                     # Reseteo:
                     actual = problem.random_reset()
-
+                    # Se asigna el nuevo estado
                     value = problem.obj_val(actual)
+                    # Se contabiliza el reseteo
                     restart_count +=1
+                    # Se saltea a la siguiente iteración
                     continue
             
-            # Ya se reseteó al menos X cant de veces y hay que
-            # definir cual es la mejor solucion
-                # TOUR: mejor solucion
-                # Buscamos el maximo
+            # Ya se reseteó al menos X cant de veces
+            # y se define cual es la mejor solución
+                # Se busca el máximo
                 mejor_solucion = max(soluciones)
+                # Se asigna la mejor solucion
                 self.tour = soluciones[mejor_solucion]
+                # Se asigna el valor de la mejor solución
                 self.value = mejor_solucion 
 
+                # Reporta los datos del tiempo de ejecución
                 end = time()
                 self.time = end-start
                 return
 
-            # Sino, nos movemos al sucesor
+            # Si no estamos en un óptimo local, se mueve al sucesor
             else:
-
-                #print('diff act ',diff[act])
+                # Se asigna el nuevo estado tras aplicar la mejor acción
                 actual = problem.result(actual, act)
+                # Se incrementa el costo total del estado
                 value = value + diff[act]
+                # Se incrementa la iteración
                 self.niters += 1
 
 class Tabu(LocalSearch):
@@ -203,65 +203,78 @@ class Tabu(LocalSearch):
         # Arrancamos del estado inicial
         actual = problem.init
         mejor = actual
+
+        # Se inicializa la lista de memoria de corto plazo
         tabu = []
 
-        #Valor objetivo
+        # Valor objetivo
         value = problem.obj_val(problem.init)
 
+        # Criterio de parada por iteraciones totales:
+        # Se calcula el minimo entre la cantidad de ciudades*20 o 1000 como límite 
         total_iter= min(len(actual)*20,1000)
-        total_tabu= min(len(actual)*2,100)
 
+        # Límite de longitud de memoria de corto plazo
+        # Se calcula el minimo entre el doble de la cantidad de ciudades o 100 como límite 
+        total_tabu= min(len(actual)*2,100)
         
+        # Se itera mientras que el número de iteraciones sea menor que el Criterio de parada
         while self.niters < total_iter:
+
+        # Se inicializa los diccionarios
             no_tabu = {}
             sucesores = {}
             
             # Determinar las acciones que se pueden aplicar y las diferencias
-            # en valor objetivo que resultan (OBTENER VECINOS):
+            # en valor objetivo que resultan (OBTENER VECINOS)
+            # Posibles_acciones: Clave: tupla (acción)
+            # Valor: es la diferencia de Costo respecto al estado actual
             posibles_acciones = problem.val_diff(actual)
-            # posibles_acciones: nos da un diccionario cuya key es una tupla (acción)
-            # y su valor es la diferencia de ésta respecto al estado actual
 
-
+            # Se itera entre las posibles acciones para obtener 
+            # su estado resultante y se guarda en un diccionario
             for accion in posibles_acciones:
-                # SUCESORES: (diccionario)
-                # La key es el ACCION, asignamos primer atributo: lista del estado, segundo atributo: valor
-                # key: Accion
-                # Lista de Estados
-                # Valor    
+                # SUCESORES:
+                # Clave: Accion,  Valor 1: Lista de Estados, Valor 2: Diferencia de Costo  
                 sucesores[accion] = problem.result(actual,accion), posibles_acciones[accion]
 
-     
+            # Se itera entre los sucesores para verificar
             for sucesor in sucesores:
-                # Posición 0 = Lista de Estado
+                # Si el estado del sucesor no está en los últimos recorridos
                 if sucesores[sucesor][0] not in tabu:
+                # Se guarda el sucesor en el diccionario no_tabu
                     no_tabu[sucesor] = sucesores[sucesor][0],sucesores[sucesor][1]
 
-            # Verificamos si ya recorrimos X cant de estados (elementos en tabu)
-            # en ese caso eliminamos el estado más antiguo para limpiar memoria
-            if self.niters > 100:
+            # Se verifica si ya recorrió X cant de estados (elementos en tabu)
+            # si se cumple se elimina el estado más antiguo para limpiar memoria
+            if self.niters > total_tabu:
                 tabu.pop(0)
             
-            # SUCESOR
-            # Clave: Accion
-            # Lista de Estados --> Orden que recorre las ciudades
-            # Valor  
+            # SUCESOR (diccionario) 
+            # Clave: Accion, Valor 1: Lista de Estado (Orden que recorre las ciudades)
+            # Valor 2: Diferencia de Costo 
             mejor_accion = max(no_tabu, key=lambda key: no_tabu[key][1])
             sucesor = no_tabu[mejor_accion][0]
-            #print('sucesor',sucesor,no_tabu[sucesor])
 
-            # Obj val devuelve valor objetivo
-            #print('SUCESOR',no_tabu[sucesor][0])
+            # Si el sucesor encontrado es más óptimo que el mejor se reemplaza
             if problem.obj_val(mejor) < problem.obj_val(sucesor):
                 mejor = sucesor
-                #iter_count = 0
             
+            # Se agrega el sucesor elegido a la lista de los últimos recorridos
             tabu.append(sucesor)
+            # Se mueve al sucesor elegido
             actual = sucesor
+
+            # Se incrementa el contador 
             self.niters += 1
 
+        # Se almacena la mejor solución encontrada en self.tour
         self.tour = mejor
+
+        # Se registra el valor objetivo en self.value.
         self.value = problem.obj_val(mejor)
+
+        # Se reporta los datos del tiempo de ejecución
         end = time()
         self.time = end-start
         return
