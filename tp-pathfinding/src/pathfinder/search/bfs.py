@@ -20,14 +20,12 @@ class BreadthFirstSearch:
         node = Node("", grid.start, 0)
 
         # Initialize the explored dictionary to be empty
-        
         reached = {} 
         
         # Add the node to the explored dictionary
         reached[node.state] = True
         
-
-                # Return if the node contains a goal state
+        # Return if the node contains a goal state
         if node.state == grid.end:
             return Solution(node, reached)
 
@@ -37,7 +35,6 @@ class BreadthFirstSearch:
         frontier.add(node)
 
         while True:
-
             #  Fail if the frontier is empty
             if frontier.is_empty():
                 return NoSolution(reached)
@@ -45,16 +42,15 @@ class BreadthFirstSearch:
             # Remove a node from the frontier
             node = frontier.remove()
 
-            # Go right
+            # Se obtienen los vecinos
             successors = grid.get_neighbours(node.state)
 
-            #Recorremos succesors para obtener las acciones 
-
+            # Se recorre succesors para obtener las acciones 
             for m in successors:
                 new_state = successors[m]
-            
-                if new_state not in reached:
 
+                # Se verifica que el nuevo estado no este recorrido
+                if new_state not in reached:
                         # Initialize the son node
                         new_node = Node("", new_state,
                                         node.cost + grid.get_cost(new_state),
@@ -72,6 +68,4 @@ class BreadthFirstSearch:
                         # Add the new node to the frontier
                         frontier.add(new_node)
 
-        # return NoSolution(explored)
-        #VERIFICAR!!!!
         return NoSolution(reached)

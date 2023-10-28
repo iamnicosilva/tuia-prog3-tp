@@ -15,72 +15,50 @@ class UniformCostSearch:
         Returns:
             Solution: Solution found
         """
-
-
-
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
 
-        # Initialize the frontier with the initial node
-        # In this example, the frontier is a queue
+        # Initialize the frontier with the initial node as a Priority Queue
         frontier = PriorityQueueFrontier()
+
         frontier.add(node)
+
+        # Se crea un diccionario
         alcanzados = {}
+
+        # Se asigna el costo al nodo actual
         alcanzados[node.state] = node.cost
 
-
-
         while True:
-
-            #count += 1
-
-
             #  Fail if the frontier is empty
             if frontier.is_empty():
                 return NoSolution(alcanzados)
 
             # Remove a node from the frontier
             node = frontier.pop()
-            #print('pop: ',node)
 
             if node.state == grid.end:
                 return Solution(node, alcanzados)
 
-            # Go right
+            # Se obtienen los vecinos
             successors = grid.get_neighbours(node.state)
 
-            #Recorremos succesors para obtener las acciones 
-
-
+            # Se recorre succesors para obtener las acciones 
             for m in successors:
-
-
-                # Obtenemos nuevo estado
-                # s' = 
+                # Se obtiene el nuevo estado
                 new_state = successors[m]
-
-
-                # Calculamos costo
+                # Se calcula el costo
                 costo = node.cost + grid.get_cost(new_state)
 
-
-
+                # Se verifica que el nuevo estado no se encuentre en alcanzados 
+                # o que pueda mejorar su costo
                 if new_state not in alcanzados or costo < alcanzados[new_state]:
                     # Initialize the son node
-                    #n' = (...)
                     new_node = Node("", new_state, costo, parent=node, action=m)
-
+                    # Se asigna el nuevo costo
                     alcanzados[new_node.state] = costo
-                    
-                    #alcanzados[new_node.state] = new_node.cost
-
-
-
-
                     # Add the new node to the frontier
                     frontier.add(new_node,costo)
-
-# PREGUNTAR: VALIDAR EL COMPORTAMIENTO EN PRUEBAS CON DISTINTAS PONDERACIONES
 
 
 

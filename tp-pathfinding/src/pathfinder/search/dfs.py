@@ -21,24 +21,16 @@ class DepthFirstSearch:
         # Initialize the explored dictionary to be empty
         expandidos = {} 
 
-        #Comprobamos que el nodo raiz sea solución
+        # Se comprueba si el nodo raiz es solución y se retorna
         if node.state == grid.end:
             return Solution(new_node, expandidos)
         
-        # Add the node to the explored dictionary
-        # nodo raiz no alo agregamos a expandidos, 
-        # solo se agrega a expandidos los nodos que removemos de la frontera
-        #expandidos[node.state] = True
-
+        # Se inicializa la frontera como una pila
         frontier = StackFrontier()
+        # Se añade un nuevo nodo raíz
         frontier.add(node)
 
-
-
-
-
         while True:
-
             #  Fail if the frontier is empty
             if frontier.is_empty():
                 return NoSolution(expandidos)
@@ -46,46 +38,31 @@ class DepthFirstSearch:
             # Remove a node from the frontier
             node = frontier.remove()
 
+            # Si el nodo esta en expandidos saltea la iteración
             if node.state in expandidos:
                 continue
-
+            # Sino se agrega a expandidos
             expandidos[node.state] = True
 
-
-            # Go right
+            # Se obtienen los vecinos
             successors = grid.get_neighbours(node.state)
 
             #Recorremos succesors para obtener las acciones 
-
             for m in successors:
-                
                 new_state = successors[m]
             
-                #if new_state not in expandidos:
-
-                        # Initialize the son node
+                # Initialize the son node
                 new_node = Node("", new_state,
                                 node.cost + grid.get_cost(new_state),
                                 parent=node, action=m)
 
+                # Se verifica que el estado del nuevo nodo no esta en expandidos
                 if new_node.state not in expandidos:
-
                 # Return if the node contains a goal state
-                # In this example, the goal test is run
-                # before adding a new node to the frontier
                     if new_state == grid.end:
                         return Solution(new_node, expandidos)
-
-
-
-
-                # Mark the successor as expandidos
-                #expandidos[new_state] = True
-
-                # Add the new node to the frontier
+                    
+                # Si el nuevo estado no es solución se añade a la frontera
                 frontier.add(new_node)
-                #print(expandidos)
-                        
-# PREGUNTAR: SI EL ORDEN EN QUE VISITA LOS NODOS ES CORECTO PARA DFS
 
         

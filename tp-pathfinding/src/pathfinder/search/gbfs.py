@@ -3,26 +3,19 @@ from ..models.frontier import PriorityQueueFrontier
 from ..models.solution import NoSolution, Solution
 from ..models.node import Node
 
-
-
 # Heuristica Manhatan
-def heuristica(celda,objetivo):
-    distanciax = abs(objetivo[0] - celda[0])
-    distanciay = abs(objetivo[1] - celda[1])
-    distancia = distanciax + distanciay
-    return distancia
+# def heuristica(celda,objetivo):
+#    distanciax = abs(objetivo[0] - celda[0])
+#    distanciay = abs(objetivo[1] - celda[1])
+#    distancia = distanciax + distanciay
+#    return distancia
 
-# Heuristica Hipotenusa
+# Heuristica Euclídica: Se decidió usar esta función ya que visita menos nodos y es mas eficiente
 def heuristica(celda,objetivo):
     distanciax = abs(objetivo[0] - celda[0])
     distanciay = abs(objetivo[1] - celda[1])
     distancia = (distanciax**2 + distanciay**2)**0.5
-    print(distancia)
     return distancia
-
-
-
-
 
 class GreedyBestFirstSearch:
     @staticmethod
@@ -35,59 +28,45 @@ class GreedyBestFirstSearch:
         Returns:
             Solution: Solution found
         """
-
-
         # Initialize a node with the initial position
         node = Node("", grid.start, 0)
-        # Initialize the frontier with the initial node
-        # In this example, the frontier is a queue
+        # Initialize the frontier with the initial node as PriorityQueue
         frontier = PriorityQueueFrontier()
-
+        # Se añade el nodo con el costo heuristico
         frontier.add(node,heuristica(grid.start,grid.end))
+        # Se inicializa el diccionario de alcanzados
         alcanzados = {}
+        # Se guarda el nodo raíz
         alcanzados[node.state] = node.cost
 
-
-
         while True:
-
-
             #  Fail if the frontier is empty
             if frontier.is_empty():
                 return NoSolution(alcanzados)
-
+            
             # Remove a node from the frontier
             node = frontier.pop()
-            #print('pop: ',node)
 
+            # Se verifica si el nodo es solución
             if node.state == grid.end:
                 return Solution(node, alcanzados)
 
-            # Go right
+           # Se obtienen los vecinos
             successors = grid.get_neighbours(node.state)
-
-            #Recorremos succesors para obtener las acciones 
-
+           
+           # Se recorre succesors para obtener las acciones 
             for m in successors:
-
-
-                # Obtenemos nuevo estado
-                # s' = 
+                # Se obtiene nuevo estado
                 new_state = successors[m]
-
-
-                # Calculamos costo
+                # Se calcula costo
                 costo = node.cost + grid.get_cost(new_state)
 
-
-
+                # Se verifica que el nuevo estado no se encuentre en alcanzados 
+                # o que pueda mejorar su costo
                 if new_state not in alcanzados or costo < alcanzados[new_state]:
                     # Initialize the son node
-                    #n' = (...)
                     new_node = Node("", new_state, costo, parent=node, action=m)
-
+                    # Se asigna el nuevo costo
                     alcanzados[new_node.state] = costo
-                    
-
                     # Add the new node to the frontier
                     frontier.add(new_node,heuristica(new_node.state,grid.end))
