@@ -2,7 +2,6 @@ import time
 from typing import Callable
 
 from .search.astar import AStarSearch
-from .search.astar2 import AStarSearch2
 from .search.gbfs import GreedyBestFirstSearch
 from .search.bfs import BreadthFirstSearch
 from .search.dfs import DepthFirstSearch
@@ -22,7 +21,6 @@ SEARCH: dict[Search, SearchFunction] = {
     Search.DEPTH_FIRST_SEARCH: DepthFirstSearch.search, 
     Search.GREEDY_BEST_FIRST_SEARCH: GreedyBestFirstSearch.search,
     Search.ASTAR_SEARCH: AStarSearch.search,
-    Search.ASTAR_SEARCH2: AStarSearch2.search,
 }
 
 
